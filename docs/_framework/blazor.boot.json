@@ -1,7 +1,7 @@
 {
   "entryAssembly": "ToDoList",
   "resources": {
-    "hash": "sha256-iQk1pEgsZumW83vXajGNhKrvt03t36McB3Py+oWiLuU=",
+    "hash": "sha256-5YZ8VBZ6NamFEeFQgy/rFi+WDdCs4U8ycnIf+d6Z2UA=",
     "runtime": {
       "dotnet.6.0.35.0bl6sac5w3.js": "sha256-T8noLH7sR5/2L2IUChsmdTPrzvzsRNOKoNnXkdWwXTs=",
       "dotnet.timezones.blat": "sha256-0D+vyaaFBJ8ddk2A3oifRPEGRVV+zR7jhBmMlANx6Zs=",
@@ -48,7 +48,7 @@
       "System.Runtime.dll": "sha256-oOjoKVmrNX0WsmbgCcuRloDH/Xjz+I2EytCORB5zKXE=",
       "System.Text.Encodings.Web.dll": "sha256-R8T4OmK28DShINIhh95dp9DsPqDrGRdRg3UCzlOgKZ8=",
       "System.Text.Json.dll": "sha256-0h0UekN2Pz3ExBYRHB3l4kUafDapiuBBub2P7I/O54M=",
-      "ToDoList.dll": "sha256-D1DzcowHaeG1bQv7GJky93CZ5ibncbJSFtfAaozEbSI="
+      "ToDoList.dll": "sha256-55Z6E7JHRTA2pdML7dLJmxcQdicPpN0C3/8qrgBhWvg="
     },
     "runtimeAssets": {
       "dotnet.wasm": {
