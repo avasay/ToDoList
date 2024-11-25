@@ -1,0 +1,92 @@
+﻿@page "/"
+@page "/index"
+
+@using System.Text.Json
+@inject IJSRuntime JSRuntime
+
+<div class="form-container">
+    <EditForm Model="@newTask" OnValidSubmit="AddTask">
+        <div class="mb-3">
+            <label for="taskTitle">New Task</label>
+            <InputText id="taskTitle" class="form-control" @bind-Value="newTask.Title" />
+        </div>
+        <button class="btn btn-primary" type="submit">Add Task</button>
+    
+
+        <div class="tasks-container">
+            <h4>Your Tasks</h4>
+            <ul class="list-group">
+                @foreach (var task in tasks)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <InputCheckbox Value="task.IsCompleted"
+                                           ValueChanged="@(args => OnTaskCompletionChanged(task, args))"
+                                           ValueExpression="@( () => task.IsCompleted )" />
+                            <span class="@((task.IsCompleted ? "text-decoration-line-through" : ""))">@task.Title</span>
+                        </div>
+                        <button class="btn btn-danger btn-sm" @onclick="() => RemoveTask(task)">Delete</button>
+                    </li>
+                }
+            </ul>
+
+            @if (msg != null)
+            {
+                <h2>@msg</h2>
+            }
+        </div>
+    </EditForm>
+</div>
+@code {
+    private List<ToDoItem> tasks = new List<ToDoItem>();
+    private ToDoItem newTask = new ToDoItem();
+    private string msg;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTasksFromLocalStorage();
+    }
+
+    private async Task AddTask()
+    {
+        if (!string.IsNullOrWhiteSpace(newTask.Title))
+        {
+            tasks.Add(new ToDoItem { Title = newTask.Title, IsCompleted = false });
+            newTask = new ToDoItem();
+            await SaveTasksToLocalStorage();
+        }
+        //await JSRuntime.InvokeAsync<bool>("confirm", $"Added Task");
+    }
+
+    private async Task RemoveTask(ToDoItem task)
+    {
+
+        tasks.Remove(task);
+        await SaveTasksToLocalStorage();
+        //await JSRuntime.InvokeAsync<bool>("confirm", $"Removed Task");
+    }
+
+    // Trigger save when the checkbox is toggled
+    private async Task OnTaskCompletionChanged(ToDoItem task, bool args)
+    {
+        // Task completion state is already updated, we just save the tasks list
+
+        task.IsCompleted = args;
+        await SaveTasksToLocalStorage();
+        //await JSRuntime.InvokeAsync<bool>("confirm", $"Task completed");
+    }
+
+    private async Task LoadTasksFromLocalStorage()
+    {
+        var tasksJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "tasks");
+        if (!string.IsNullOrEmpty(tasksJson))
+        {
+            tasks = JsonSerializer.Deserialize<List<ToDoItem>>(tasksJson) ?? new List<ToDoItem>();
+        }
+    }
+
+    private async Task SaveTasksToLocalStorage()
+    {
+        var tasksJson = JsonSerializer.Serialize(tasks);
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "tasks", tasksJson);
+    }
+}
