@@ -3,39 +3,41 @@
 
 @using System.Text.Json
 @inject IJSRuntime JSRuntime
+<div class="container mx-auto p-4 md:p-8 flex flex-col items-center">
+    <h1 style="font-size:2em">A Simple ToDo List</h1>
+    <div class="form-container">
+        <EditForm Model="@newTask" OnValidSubmit="AddTask">
+            <div class="mb-3">
+                <label for="taskTitle">New Task</label>
+                <InputText id="taskTitle" class="form-control" @bind-Value="newTask.Title" />
+            </div>
+            <button class="btn btn-primary" type="submit">Add Task</button>
+        
 
-<div class="form-container">
-    <EditForm Model="@newTask" OnValidSubmit="AddTask">
-        <div class="mb-3">
-            <label for="taskTitle">New Task</label>
-            <InputText id="taskTitle" class="form-control" @bind-Value="newTask.Title" />
-        </div>
-        <button class="btn btn-primary" type="submit">Add Task</button>
-    
+            <div class="tasks-container">
+                <h4>Your Tasks</h4>
+                <ul class="list-group">
+                    @foreach (var task in tasks)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <InputCheckbox Value="task.IsCompleted"
+                                            ValueChanged="@(args => OnTaskCompletionChanged(task, args))"
+                                            ValueExpression="@( () => task.IsCompleted )" />
+                                <span class="@((task.IsCompleted ? "text-decoration-line-through" : ""))">@task.Title</span>
+                            </div>
+                            <button class="btn btn-danger btn-sm" @onclick="() => RemoveTask(task)">Delete</button>
+                        </li>
+                    }
+                </ul>
 
-        <div class="tasks-container">
-            <h4>Your Tasks</h4>
-            <ul class="list-group">
-                @foreach (var task in tasks)
+                @if (msg != null)
                 {
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <InputCheckbox Value="task.IsCompleted"
-                                           ValueChanged="@(args => OnTaskCompletionChanged(task, args))"
-                                           ValueExpression="@( () => task.IsCompleted )" />
-                            <span class="@((task.IsCompleted ? "text-decoration-line-through" : ""))">@task.Title</span>
-                        </div>
-                        <button class="btn btn-danger btn-sm" @onclick="() => RemoveTask(task)">Delete</button>
-                    </li>
+                    <h2>@msg</h2>
                 }
-            </ul>
-
-            @if (msg != null)
-            {
-                <h2>@msg</h2>
-            }
-        </div>
-    </EditForm>
+            </div>
+        </EditForm>
+    </div>
 </div>
 @code {
     private List<ToDoItem> tasks = new List<ToDoItem>();
